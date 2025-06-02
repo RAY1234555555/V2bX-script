@@ -268,3 +268,26 @@ EOF
 echo -e "${green}开始安装${plain}"
 install_base
 install_V2bX $1
+
+echo "创建或修复 systemd 服务文件..."
+
+cat <<EOF | sudo tee /etc/systemd/system/V2bX.service > /dev/null
+[Unit]
+Description=V2bX Service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/usr/local/V2bX
+ExecStart=/usr/local/V2bX/V2bX start
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+echo "重载 systemd 配置并启动服务..."
+sudo systemctl daemon-reload
+sudo systemctl enable V2bX
+sudo systemctl restart V2bX
