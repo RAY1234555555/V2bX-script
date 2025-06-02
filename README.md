@@ -30,16 +30,16 @@ bash <(curl -Ls https://raw.githubusercontent.com/RAY1234555555/V2bX-script/mast
 
 ## 配置文件说明
 
-配置文件位于 `/usr/local/V2bX/config.json`，安装后需要修改配置文件中的以下字段：
+配置文件位于 `/usr/local/V2bX/config.json`，安装过程中会引导你输入以下信息：
 
 - `APIHost`: V2board 面板地址
 - `NodeID`: 节点 ID
 - `Key`: 通信密钥
 
-修改完成后，重启服务：
+如需重新配置，可以运行：
 
 \`\`\`bash
-systemctl restart V2bX
+/usr/local/V2bX/initconfig.sh
 \`\`\`
 
 ## 服务管理
@@ -70,7 +70,12 @@ journalctl -u V2bX -f
 如有其他问题，请提交 Issue。
 \`\`\`
 
-## 6. 创建 version.txt 文件（备用获取版本用）
+这个修正后的 README.md 有以下改进：
 
-```text file="version.txt" type="code"
-v1.0.0
+1. 修复了安装命令的格式，确保没有多余的 `bash` 单词
+2. 使用了正确的代码块格式，避免格式混乱
+3. 添加了重新配置的命令说明
+4. 保持了原有的内容结构和信息
+
+请将这个修正后的 README.md 文件上传到你的 GitHub 仓库，替换原来的文件。
+
