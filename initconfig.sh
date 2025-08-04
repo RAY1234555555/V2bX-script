@@ -114,7 +114,7 @@ add_node_config() {
             "ApiHost": "$ApiHost",
             "ApiKey": "$ApiKey",
             "NodeID": $NodeID,
-            "NodeType": "$NodeType",
+            "Type": "$NodeType",
             "Timeout": 30,
             "ListenIP": "0.0.0.0",
             "SendIP": "0.0.0.0",
@@ -145,7 +145,7 @@ EOF
             "ApiHost": "$ApiHost",
             "ApiKey": "$ApiKey",
             "NodeID": $NodeID,
-            "NodeType": "$NodeType",
+            "Type": "$NodeType",
             "Timeout": 30,
             "ListenIP": "$listen_ip",
             "SendIP": "0.0.0.0",
@@ -174,7 +174,7 @@ EOF
             "ApiHost": "$ApiHost",
             "ApiKey": "$ApiKey",
             "NodeID": $NodeID,
-            "NodeType": "$NodeType",
+            "Type": "$NodeType",
             "Hysteria2ConfigPath": "/etc/V2bX/hy2config.yaml",
             "Timeout": 30,
             "ListenIP": "",
@@ -398,7 +398,11 @@ EOF
     ]
 }
 EOF
-
+    ipv6_support=$(check_ipv6_support)
+    dnsstrategy="ipv4_only"
+    if [ "$ipv6_support" -eq 1 ]; then
+        dnsstrategy="prefer_ipv4"
+    fi
     # 创建 sing_origin.json 文件
     cat <<EOF > /etc/V2bX/sing_origin.json
 {
@@ -406,16 +410,19 @@ EOF
     "servers": [
       {
         "tag": "cf",
-        "address": "1.1.1.1",
-        "strategy": "prefer_ipv4"
+        "address": "1.1.1.1"
       }
-    ]
+    ],
+    "strategy": "$dnsstrategy"
   },
   "outbounds": [
     {
       "tag": "direct",
       "type": "direct",
-      "domain_strategy": "prefer_ipv4"
+      "domain_resolver": {
+        "server": "cf",
+        "strategy": "$dnsstrategy"
+      }
     },
     {
       "type": "block",
