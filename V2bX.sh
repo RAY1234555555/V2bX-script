@@ -451,8 +451,10 @@ add_node_config() {
         fi
     done
 
+    # 使用更清晰的变量名 node_protocol
+    local node_protocol=""
     if [ "$core_hysteria2" = true ] && [ "$core_xray" = false ] && [ "$core_sing" = false ]; then
-        NodeType="hysteria2"
+        node_protocol="hysteria2"
     else
         echo -e "${yellow}请选择节点传输协议：${plain}"
         echo -e "${green}1. Shadowsocks${plain}"
@@ -470,23 +472,24 @@ add_node_config() {
             echo -e "${green}7. Tuic${plain}"
             echo -e "${green}8. AnyTLS${plain}"
         fi
-        read -rp "请输入：" NodeType
-        case "$NodeType" in
-            1 ) NodeType="shadowsocks" ;;
-            2 ) NodeType="vless" ;;
-            3 ) NodeType="vmess" ;;
-            4 ) NodeType="hysteria" ;;
-            5 ) NodeType="hysteria2" ;;
-            6 ) NodeType="trojan" ;;
-            7 ) NodeType="tuic" ;;
-            8 ) NodeType="anytls" ;;
-            * ) NodeType="shadowsocks" ;;
+        local user_choice
+        read -rp "请输入：" user_choice
+        case "$user_choice" in
+            1 ) node_protocol="shadowsocks" ;;
+            2 ) node_protocol="vless" ;;
+            3 ) node_protocol="vmess" ;;
+            4 ) node_protocol="hysteria" ;;
+            5 ) node_protocol="hysteria2" ;;
+            6 ) node_protocol="trojan" ;;
+            7 ) node_protocol="tuic" ;;
+            8 ) node_protocol="anytls" ;;
+            * ) node_protocol="shadowsocks" ;;
         esac
     fi
     fastopen=true
-    if [ "$NodeType" == "vless" ]; then
+    if [ "$node_protocol" == "vless" ]; then
         read -rp "请选择是否为reality节点？(y/n)" isreality
-    elif [ "$NodeType" == "hysteria" ] || [ "$NodeType" == "hysteria2" ] || [ "$NodeType" == "tuic" ] || [ "$NodeType" == "anytls" ]; then
+    elif [ "$node_protocol" == "hysteria" ] || [ "$node_protocol" == "hysteria2" ] || [ "$node_protocol" == "tuic" ] || [ "$node_protocol" == "anytls" ]; then
         fastopen=false
         istls="y"
     fi
@@ -526,7 +529,7 @@ add_node_config() {
             "ApiHost": "$ApiHost",
             "ApiKey": "$ApiKey",
             "NodeID": $NodeID,
-            "Type": "$NodeType",
+            "Type": "$node_protocol",
             "Timeout": 30,
             "ListenIP": "0.0.0.0",
             "SendIP": "0.0.0.0",
@@ -557,7 +560,7 @@ EOF
             "ApiHost": "$ApiHost",
             "ApiKey": "$ApiKey",
             "NodeID": $NodeID,
-            "Type": "$NodeType",
+            "Type": "$node_protocol",
             "Timeout": 30,
             "ListenIP": "$listen_ip",
             "SendIP": "0.0.0.0",
@@ -586,7 +589,7 @@ EOF
             "ApiHost": "$ApiHost",
             "ApiKey": "$ApiKey",
             "NodeID": $NodeID,
-            "Type": "$NodeType",
+            "Type": "$node_protocol",
             "Hysteria2ConfigPath": "/etc/V2bX/hy2config.yaml",
             "Timeout": 30,
             "ListenIP": "",
@@ -628,6 +631,7 @@ generate_config_file() {
     first_node=true
     core_xray=false
     core_sing=false
+    core_hysteria2=false
     fixed_api_info=false
     check_api=false
     
